@@ -32,7 +32,7 @@ RUN gem install bundler && bundle install
 COPY . /var/www/
 
 #Setting Docker listen on port
-EXPOSE 3000
+EXPOSE 3001
 
 #runnnig rails
 CMD ["rails", "server", "-b", "0.0.0.0"]
