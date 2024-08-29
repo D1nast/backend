@@ -1,10 +1,9 @@
-require 'net/http'
-require 'uri'
-
 class CoinsController < ApplicationController
+  include HTTParty
+  base_uri 'https://api.coincap.io/v2/assets'
   def index
-    uri = URI("https://api.coincap.io/v2/assets?limit=30")
-    response = Net::HTTP.get(uri) # HTTP GET リクエストを送信
-    render json:response
+    response = self.class.get('?limit=30')
+    render json:response.parsed_response
   end
+  # 工夫点　１次情報のみ活用した点 Gem作成者のGiHubを見て書いた　２次情報を見ていない
 end
