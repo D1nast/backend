@@ -69,9 +69,12 @@ GEM
     crass (1.0.6)
     csv (3.3.0)
     date (3.3.4)
+    dotenv (3.1.2)
+    dotenv-rails (3.1.2)
+      dotenv (= 3.1.2)
+      railties (>= 6.1)
     erubi (1.13.0)
     ffi (1.17.0)
-    ffi (1.17.0-arm64-darwin)
     globalid (1.2.1)
       activesupport (>= 6.1)
     httparty (0.22.0)
@@ -179,6 +182,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
+  dotenv-rails
   httparty
   listen (~> 3.3)
   pg (~> 1.2)
