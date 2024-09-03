@@ -1,4 +1,5 @@
 app_path = File.expand_path('..', __dir__)
+#memo in this case,directory is "backend"
 
 worker_processes 1
 
@@ -7,20 +8,20 @@ working_directory app_path
 listen 3000
 
 pid "#{app_path}/tmp/pids/unicorn.pid"
-
 stderr_path "#{app_path}/log/unicorn.stderr.log"
-
 stdout_path "#{app_path}/log/unicorn.stdout.log"
+#memo store log
 
 timeout 600
 
+#below,for faster processing
+
 preload_app true
 GC.respond_to?(:copy_on_write_friendly=) && GC.copy_on_write_friendly = true
-
 check_client_connection false
+# conf(improve worker process,faster client connection)
 
 run_once = true
-
 before_fork do |server, worker|
   defined?(ActiveRecord::Base) &&
     ActiveRecord::Base.connection.disconnect!
