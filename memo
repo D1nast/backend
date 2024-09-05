@@ -18,3 +18,11 @@ sudo systemctl status nginx
 
 unicorn
 /home/ec2-user/backend/config
+bundle exec unicorn_rails -c config/unicorn.rb -E production
+本番環境なら
+bundle exec unicorn_rails -c /home/ec2-user/backend/config/unicorn.rb -E production
+
+postgreSQL
+psql
+\du :ロールを確認
+\l:データベース一覧
