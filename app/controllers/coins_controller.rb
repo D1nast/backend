@@ -4,7 +4,8 @@ class CoinsController < ApplicationController
 
   NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
   NEWS_API_KEY = ENV['NEWS_API_KEY']
-
+  LINK_API_BASE_URL = 'https://api.linkpreview.net'
+  LINK_API_KEY = ENV['LINK_API_KEY']
   def index
     response = self.class.get('https://api.coincap.io/v2/assets?limit=30')
     render json:response.parsed_response
