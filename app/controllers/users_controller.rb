@@ -5,9 +5,10 @@ class UsersController < ApplicationController
     render json: { email: user.email }
   end
 
+# createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること
   def create
     user = User.new(user_params)
-    if params_check && user.save
+    if params_check && checkAtSign && user.save
       render json: { email: user.email }, status: :created
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -17,30 +18,34 @@ class UsersController < ApplicationController
   private
 # ↓ストロングパラメータ
   def user_params
-    params.require(:user).permit(:email,:password)
+    params.require(:user).permit(:email,:password,:password_confirmation)
   end
 
 # ↓パスワードが６文字以上かnilじゃないかチェック
   def params_check
-    password = params[:password]
+    password = params.dig(:user, :password)
     len = password.length
-    if len >=6 && !password.nil?
+    if len >= 6 && !password.nil?
       return true
     else
       return false
     end 
   end
 
-  # ↓"@"と"."をもち、且つ"."が一つでも"@"の後ろにあれば登録する
+  # ↓＠の数が1つであることを前提に、＠以降にドットが１つでもあればOK
+  # hello@gmail.comの場合、
   def checkAtSign
-    email = params[:email]
-    checkDot = email.index(".")
-    checkAt  = email.index("@")
-    
-    if email.include?("@") && email.inclide?(".") && checkAt < checkDot
-      return true
-    else
-      return false
+    email = params.dig(:user,:email)
+    len = email.length
+    checkAt  = email.index("@") 
+    countAt = email.scan("@").length
+    if countAt == 1
+      afterAt = email.slice(checkAt,len-1)
+      if afterAt.include?(".")
+        return true
+      else
+        return false
+      end
     end
   end
 
