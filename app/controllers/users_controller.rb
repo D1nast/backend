@@ -33,7 +33,6 @@ class UsersController < ApplicationController
   end
 
   # ↓＠の数が1つであることを前提に、＠以降にドットが１つでもあればOK
-  # hello@gmail.comの場合、
   def checkAtSign
     email = params.dig(:user,:email)
     len = email.length

@@ -14,9 +14,16 @@ class CoinsController < ApplicationController
 
   def news
     today = Date.today
-    oneweekago = Date.today-7
-    url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneweekago}&to=#{today}&language=en&pageSize=25&sortBy=poularity&apiKey=#{NEWS_API_KEY}"
+    oneago = Date.today-1
+    url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=25&sortBy=poularity&apiKey=#{NEWS_API_KEY}"
     response = self.class.get(url)
     render json:response.parsed_response
   end
+
+  def send
+    @user="reiji"
+    UserMailer.send_mail(@user).deliver
+
+  end
+
 end
