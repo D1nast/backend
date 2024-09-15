@@ -20,10 +20,4 @@ class CoinsController < ApplicationController
     render json:response.parsed_response
   end
 
-  def send
-    @user="reiji"
-    UserMailer.send_mail(@user).deliver
-
-  end
-
 end

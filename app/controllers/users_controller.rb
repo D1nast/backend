@@ -1,10 +1,14 @@
 class UsersController < ApplicationController
+  include HTTParty
+  require 'date'
+  require 'json'
+  NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
+  NEWS_API_KEY = ENV['NEWS_API_KEY']
 
   def show 
     user = User.find(1)
     render json: { email: user.email }
   end
-
 # createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること
   def create
     user = User.new(user_params)
@@ -14,6 +18,26 @@ class UsersController < ApplicationController
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
+
+# 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
+  def send
+    today = Date.today
+    oneago = Date.today - 1
+    url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
+    response = self.class.get(url, timeout: 10) # タイムアウト時間を10秒に設定
+    data = response.parsed_response["articles"]
+    extracted_data = data.map do |article|
+      {'title' => article['title']}
+    end
+    user = User.find(2)
+    UserMailer.send_mail(user, extracted_data).deliver
+  end
+
+  def send_test
+    user = User.find(2)
+    UserMailer.send_test(user).deliver
+  end
+
 
   private
 # ↓ストロングパラメータ
@@ -47,5 +71,4 @@ class UsersController < ApplicationController
       end
     end
   end
-
 end
