@@ -2,6 +2,9 @@
 module UserAuth
   module TokenCommons
 
+    # 共通モジュール　トークン発行において共通のメソッド
+    # UserAuthで作ったメソッドを使いやすくした 
+    
     # エンコードキー
     def secret_key
       UserAuth.token_secret_signature_key
@@ -28,6 +31,7 @@ module UserAuth
     end
 
     # 暗号化クラスの生成
+    # JWTのpayloadに埋め込むユーザーIDを暗号化
     # Doc: https://api.rubyonrails.org/v6.1.0/classes/ActiveSupport/MessageEncryptor.html
     # key_generatorメソッドのsecretはsecret_key_baseが使われる
     # 参考: https://techracho.bpsinc.jp/hachi8833/2017_10_24/46809

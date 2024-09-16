@@ -1,4 +1,3 @@
-# api/app/services/user_auth/refresh_token.rb
 require 'jwt'
 
 module UserAuth
@@ -7,6 +6,9 @@ module UserAuth
 
     attr_reader :user_id, :payload, :token
 
+    # インスタンス生成時にuser_id、tokenを取得
+    # tokenがある場合はデコード（複合）を行い、ない場合はエンコード（トークンの発行）
+    # JWT.decode ⇨ [{payload},{header}]の形で帰ってくる　header不要なので.first
     def initialize(user_id: nil, token: nil)
       if token.present?
         # decode

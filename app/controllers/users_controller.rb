@@ -23,6 +23,7 @@ class UsersController < ApplicationController
   end
 
 # 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
+# 課題：①本番環境に合わせていくことと　②取得したアドレス全件に送っていくこと
   def mail
     today = Date.today
     oneago = Date.today - 1

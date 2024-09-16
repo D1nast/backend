@@ -27,7 +27,6 @@ production:
   host: <%= ENV['DB_HOST'] %>
   port: 5432 
   #PostgreSQLはポート指定 5432はdefault
-  # database: crypt_api
-  database: crypt_api
+  database: users
   username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>

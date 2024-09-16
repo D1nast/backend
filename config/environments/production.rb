@@ -110,4 +110,19 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+  
+  #本番環境でもメール機能を実装 
+  USER_NAME = ENV['EMAIL_USER']
+  USER_PASS = ENV['EMAIL_PASS']
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    port:                 587,
+    address:              'smtp.office365.com',
+    domain:               'outlook.jp',
+    user_name:            "#{USER_NAME}",
+    password:             "#{USER_PASS}",
+    authentication:       'login',
+    enable_starttls_auto: true
+  }
 end
