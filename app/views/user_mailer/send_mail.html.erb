@@ -6,11 +6,11 @@
   <body>
     <h1>おはようございます！本日のニュースをお届けします</h1>
     <h1>Latest Bitcoin News</h1>
-      <%# <% @data.each do |data| %> 
-      <%# <h2><%= data['title']</h2> %>
-      <%# <a href="<%= data['url']">Read more</a> %>
-      <%# <hr>  %>
-    <%# <% end %>
+      <% @data.each do |data| %> 
+      <h2><%= data['title']%></h2>
+      <a href="<%= data['url']%>">Read more</a>
+      <hr> 
+    <% end %>
     <p>メッセージ配信の停止を希望される方は、以下URLからお手続きください<br/>
         <%= @url %></p>
     <p>今後ともクリプトポータルをよろしくお願い致します</p>

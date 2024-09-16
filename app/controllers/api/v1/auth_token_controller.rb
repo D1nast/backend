@@ -1,4 +1,4 @@
-class AuthTokenController < ApplicationController
+class Api::V1::AuthTokenController < ApplicationController
   
   include UserSessionizeService
   # 404エラーが発生した場合にヘッダーのみを返す
@@ -36,7 +36,7 @@ class AuthTokenController < ApplicationController
 
   private
 
-   # params[:email]からアクティブなユーザーを返す
+  #  params[:email]からアクティブなユーザーを返す
    def login_user
      @_login_user ||= User.find_by_activated(auth_params[:email])
    end

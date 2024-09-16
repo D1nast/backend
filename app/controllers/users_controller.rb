@@ -29,9 +29,12 @@ class UsersController < ApplicationController
     url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
     response = self.class.get(url, timeout: 10) # タイムアウト時間を10秒に設定
     data = response.parsed_response["articles"]
-    extracted_data = data.map do |article|
-      {'title' => article['title']}
+    extracted_data = data.map do |data|
+      {'title' => data['title'],
+        'url' => data['url'],
+      }
     end
+    render json:extracted_data
     user = User.find(2)
     UserMailer.send_mail(user, extracted_data).deliver
   end
