@@ -1,8 +1,10 @@
 class User < ApplicationRecord
+  # token生成モジュール
+  include TokenGenerateService
 
   has_secure_password
   validates :email, presence: true, uniqueness: true
-  
+
 # リフレッシュトークンのJWT IDを記憶
   def remember(jti)
     update!(refresh_jti: jti)

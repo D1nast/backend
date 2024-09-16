@@ -1,4 +1,5 @@
 module TokenGenerateService
+  
   def self.included(base)
     base.extend ClassMethods
   end

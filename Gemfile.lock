@@ -68,6 +68,7 @@ GEM
     builder (3.3.0)
     byebug (11.1.3)
     chronic (0.10.2)
+    clipboard (2.0.0)
     concurrent-ruby (1.3.4)
     crass (1.0.6)
     csv (3.3.0)
@@ -153,9 +154,6 @@ GEM
     rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
       nokogiri (~> 1.14)
-    rails-i18n (7.0.9)
-      i18n (>= 0.7, < 2)
-      railties (>= 6.0.0, < 8)
     rails_same_site_cookie (0.1.9)
       rack (>= 1.5)
       user_agent_parser (~> 2.6)
@@ -203,6 +201,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.4)
   byebug
+  clipboard
   dotenv-rails
   httparty
   jwt
@@ -211,7 +210,6 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-cors
   rails (~> 6.1.4)
-  rails-i18n
   rails_same_site_cookie (~> 0.1.8)
   spring
   sqlite3 (~> 1.4)

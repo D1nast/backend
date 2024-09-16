@@ -4,19 +4,12 @@ class UsersController < ApplicationController
   require 'json'
   NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
   NEWS_API_KEY = ENV['NEWS_API_KEY']
+  before_action :authenticate_user,only:[:show]
 
   def show
     Rails.logger.debug("Session User ID in show action: #{session[:user_id]}")
-    if session[:user_id]
-      begin
-        user = User.find(session[:user_id])
-        render json: { email: user.email }
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: 'User not found' }, status: :not_found
-      end
-    else
-      render json: { error: 'No user logged in' }, status: :unauthorized
-    end
+        # user = User.find(2)
+        render json: current_user.as_json(only:[:id,:email,:created_at])
   end
   
 # createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること

@@ -31,6 +31,8 @@ gem 'httparty'
 gem 'dotenv-rails'
 # 定期的なタスクの実行
 gem 'whenever', require: false
+# rails consoleでクリップボードにコピー
+gem 'clipboard'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
