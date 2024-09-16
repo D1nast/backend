@@ -5,10 +5,20 @@ class UsersController < ApplicationController
   NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
   NEWS_API_KEY = ENV['NEWS_API_KEY']
 
-  def show 
-    user = User.find(1)
-    render json: { email: user.email }
+  def show
+    Rails.logger.debug("Session User ID in show action: #{session[:user_id]}")
+    if session[:user_id]
+      begin
+        user = User.find(session[:user_id])
+        render json: { email: user.email }
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'User not found' }, status: :not_found
+      end
+    else
+      render json: { error: 'No user logged in' }, status: :unauthorized
+    end
   end
+  
 # createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること
   def create
     user = User.new(user_params)
@@ -20,7 +30,7 @@ class UsersController < ApplicationController
   end
 
 # 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
-  def send
+  def mail
     today = Date.today
     oneago = Date.today - 1
     url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
@@ -33,11 +43,10 @@ class UsersController < ApplicationController
     UserMailer.send_mail(user, extracted_data).deliver
   end
 
-  def send_test
+  def mail_test
     user = User.find(2)
     UserMailer.send_test(user).deliver
   end
-
 
   private
 # ↓ストロングパラメータ
@@ -45,6 +54,11 @@ class UsersController < ApplicationController
     params.require(:user).permit(:email,:password,:password_confirmation)
   end
 
+  # def require_login
+  #   if logged_in? == false
+  #     render json:{error:'Not authorized'},status:unauthorized
+  #   end
+  # end
 # ↓パスワードが６文字以上かnilじゃないかチェック
   def params_check
     password = params.dig(:user, :password)
@@ -71,4 +85,6 @@ class UsersController < ApplicationController
       end
     end
   end
+
+
 end

@@ -21,6 +21,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'bcrypt', '~> 3.1.7'
 
+gem 'jwt'
+gem "rails_same_site_cookie", "~> 0.1.8"
 gem 'rack-cors'
 
 group :development, :test do
