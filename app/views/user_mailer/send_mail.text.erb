@@ -5,3 +5,8 @@
   今後とも クリプトポータルをよろしくお願いします。
    <%= @url %>
 
+      <% @data.each do |data| %> 
+      <h2><%= data['title']%></h2>
+      <a href="<%= data['url']%>">Read more</a>
+      <hr> 
+    <% end %>

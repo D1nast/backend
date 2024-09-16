@@ -6,11 +6,11 @@ class UsersController < ApplicationController
   NEWS_API_KEY = ENV['NEWS_API_KEY']
   before_action :authenticate_user,only:[:show]
 
-  def show
-    Rails.logger.debug("Session User ID in show action: #{session[:user_id]}")
-        # user = User.find(2)
-        render json: current_user.as_json(only:[:id,:email,:created_at])
-  end
+  # def show
+  #   Rails.logger.debug("Session User ID in show action: #{session[:user_id]}")
+  #       # user = User.find(2)
+  #       render json: current_user.as_json(only:[:id,:email,:created_at])
+  # end
   
 # createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること
   def create
@@ -35,14 +35,18 @@ class UsersController < ApplicationController
         'url' => data['url'],
       }
     end
-    render json:extracted_data
-    user = User.find(2)
-    UserMailer.send_mail(user, extracted_data).deliver
-  end
-
-  def mail_test
-    user = User.find(2)
-    UserMailer.send_test(user).deliver
+    # テーブルから全ての登録ユーザーを洗い出して、deliverがtrueの顧客にメールアドレスを
+    userList = User.all
+    extraced_user = userList.map do |user|
+      if user.deliver
+        {'email' => user['email']}
+      end
+    end
+    render json:extraced_user
+    UserMailer.send_mail(extraced_user, extracted_data).deliver
+    # RAILS_ENVでメールを送れない　画面がホワイトアウトする
+    # extraced_dataには以下のような内容が引数に送られている（配列のオブジェクト）
+    # [{"title":"内容","url":"リンク"},{"title":"内容","url":"リンク"}]
   end
 
   private
