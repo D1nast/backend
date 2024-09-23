@@ -3,12 +3,14 @@ Rails.application.routes.draw do
   get '/test', to: 'users#mail'
   get '/' , to: 'coins#index'
 
-  # ユーザーの登録やメール配信解除
+  # ユーザー登録
   post '/create' , to: 'users#create' 
+  # メール配信の停止・再開
   post '/change', to: 'users#change'
+  # ユーザー登録の削除
+  post '/delete', to: 'users#delete'
 
   get '/news' , to: 'coins#news'
-  get   '/user', to: 'users#show'
 
   namespace :api  do
     namespace :v1 do

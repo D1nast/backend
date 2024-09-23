@@ -21,14 +21,13 @@ set :environment, 'production'
 set :output, "#{Rails.root}/log/cron.log"
 job_type :rake, "source ~/.zshrc; export PATH=\"$HOME/.rbenv/bin:$PATH\"; eval \"$(rbenv init -)\"; cd :path && bundle exec rake :task RAILS_ENV=:environment :output"
 
-# 本番環境:productionでもやりたい 
+# テスト用　１分間おきに発信
+# every 1.minute do
+#   rake 'send_mail:daily'
+# end
+
 every 1.day, at: '7:00 am' do
-  rake 'send_mail:mail'
+  rake 'send_mail:daily'
 end
-
-
-
-# crontabは本番環境でも動いてくれるけど、メール送信ができない
-# 
 
 # Learn more: http://github.com/javan/whenever

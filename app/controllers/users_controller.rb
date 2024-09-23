@@ -5,18 +5,13 @@ class UsersController < ApplicationController
   NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
   NEWS_API_KEY = ENV['NEWS_API_KEY']
   before_action :authenticate_user,only:[:show]
-
-  # def show
-  #   Rails.logger.debug("Session User ID in show action: #{session[:user_id]}")
-  #       # user = User.find(2)
-  #       render json: current_user.as_json(only:[:id,:email,:created_at])
-  # end
   
 # createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること
   def create
     user = User.new(user_params)
     if params_check && checkAtSign && user.save
       render json: { email: user.email }, status: :created
+      UserMailer.register_user(user.email).deliver
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -37,13 +32,19 @@ class UsersController < ApplicationController
     end
   end
 
+  def delete
+    user = User.find_by(email:user_params[:email])
+    # userでレコードを全て取得
+    UserMailer.delete_user(user.email).deliver
+    user.destroy
+  end
+
 # 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
 # 課題：①本番環境に合わせていくことと　②取得したアドレス全件に送っていくこと
 # リンクつけると弾かれる
 # 定期的な配信になっていない
   def mail
     # テーブルから全ての登録ユーザーを洗い出して、deliverがtrueの顧客にメールアドレスを
-  
     userList = User.all
     extraced_user = userList.map do |user|
       if user.deliver
@@ -54,7 +55,6 @@ class UsersController < ApplicationController
     # RAILS_ENVでメールを送れない　画面がホワイトアウトする
     # extraced_dataには以下のような内容が引数に送られている（配列のオブジェクト）
     # [{"title":"内容","url":"リンク"},{"title":"内容","url":"リンク"}]
-
   end
 
   private
