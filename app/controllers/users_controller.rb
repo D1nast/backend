@@ -22,31 +22,39 @@ class UsersController < ApplicationController
     end
   end
 
+  # メール配信を解除する
+  # ユーザーが見つからなければその時点で処理取りやめ
+  def change
+    user = User.find_by(email:user_params[:email])
+    if user.deliver == true
+      user.deliver=false
+      user.save
+      render json:"メールの配信を解除しました"
+    else
+      user.deliver=true
+      user.save
+      render json:"メールの配信を登録しました"
+    end
+  end
+
 # 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
 # 課題：①本番環境に合わせていくことと　②取得したアドレス全件に送っていくこと
+# リンクつけると弾かれる
+# 定期的な配信になっていない
   def mail
-    today = Date.today
-    oneago = Date.today - 1
-    url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
-    response = self.class.get(url, timeout: 10) # タイムアウト時間を10秒に設定
-    data = response.parsed_response["articles"]
-    extracted_data = data.map do |data|
-      {'title' => data['title'],
-        'url' => data['url'],
-      }
-    end
     # テーブルから全ての登録ユーザーを洗い出して、deliverがtrueの顧客にメールアドレスを
+  
     userList = User.all
     extraced_user = userList.map do |user|
       if user.deliver
         {'email' => user['email']}
       end
     end
-    render json:extraced_user
-    UserMailer.send_mail(extraced_user, extracted_data).deliver
+    UserMailer.send_mail(extraced_user).deliver
     # RAILS_ENVでメールを送れない　画面がホワイトアウトする
     # extraced_dataには以下のような内容が引数に送られている（配列のオブジェクト）
     # [{"title":"内容","url":"リンク"},{"title":"内容","url":"リンク"}]
+
   end
 
   private
@@ -60,7 +68,9 @@ class UsersController < ApplicationController
   #     render json:{error:'Not authorized'},status:unauthorized
   #   end
   # end
-# ↓パスワードが６文字以上かnilじゃないかチェック
+  
+
+  #  ↓パスワードが６文字以上かnilじゃないかチェック
   def params_check
     password = params.dig(:user, :password)
     len = password.length

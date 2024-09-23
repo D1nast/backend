@@ -112,6 +112,8 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
   
   #本番環境でもメール機能を実装 
+
+  
   USER_NAME = ENV['EMAIL_USER']
   USER_PASS = ENV['EMAIL_PASS']
   config.action_mailer.raise_delivery_errors = true

@@ -17,24 +17,18 @@ require File.expand_path(File.dirname(__FILE__) + '/environment')
 # job_type :rake, "source ~/.zshrc; export PATH=\"$HOME/.rbenv/bin:$PATH\"; eval \"$(rbenv init -)\"; cd :path && RAILS_ENV=:environment bundle exec rake :task :output"
 
 # 本番環境ならこっち
-rails_env = :production
-set :environment, rails_env
+set :environment, 'production'
 set :output, "#{Rails.root}/log/cron.log"
-job_type :rake, "source ~/.zshrc; export PATH=\"$HOME/.rbenv/bin:$PATH\"; eval \"$(rbenv init -)\"; cd :path && bundle exec rake :task RAILS_ENV=:production :output"
-
+job_type :rake, "source ~/.zshrc; export PATH=\"$HOME/.rbenv/bin:$PATH\"; eval \"$(rbenv init -)\"; cd :path && bundle exec rake :task RAILS_ENV=:environment :output"
 
 # 本番環境:productionでもやりたい 
 every 1.day, at: '7:00 am' do
-  rake 'send_mail:send'
+  rake 'send_mail:mail'
 end
 
-#   command "/usr/bin/some_great_command"
-#   runner "MyModel.some_method"
-#   rake "some:great:rake:task"
-# end
-#
-# every 4.days do
-#   runner "AnotherModel.prune_old_records"
-# end
+
+
+# crontabは本番環境でも動いてくれるけど、メール送信ができない
+# 
 
 # Learn more: http://github.com/javan/whenever

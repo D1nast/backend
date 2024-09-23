@@ -14,7 +14,7 @@ class CoinsController < ApplicationController
 
   def news
     today = Date.today
-    oneago = Date.today-1
+    oneago = Date.today-2
     url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=25&sortBy=poularity&apiKey=#{NEWS_API_KEY}"
     response = self.class.get(url)
     render json:response.parsed_response
