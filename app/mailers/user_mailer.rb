@@ -1,25 +1,59 @@
 class UserMailer < ApplicationMailer
-  
-  def send_mail(user,extracted_data)
 
-    @user  = user
-    @today = Date.today
-    @url   = 'cn-cryptnews.com'
-    @data  = extracted_data
-    # urlは、メール本文のテキストに渡す
-    mail(to:@user.email,subject:"#{@today}     本日の仮想通貨市場のニュースをお届けします")
-    #@user.emailはデータベースのカラムを入力すること
-    # userの引数は、データベースから送られてくるメールアドレスを入力したい
+  include HTTParty
+  NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
+  NEWS_API_KEY = ENV['NEWS_API_KEY']
+
+  # 毎日朝７時にメール仮想通貨のマーケット情報のメールを送信する
+  def daily_mail
+    def getAPI #APIの取得
+      today = Date.today
+      oneago = Date.today - 2
+      api = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
+      response = self.class.get(api, timeout: 10) # タイムアウト時間を10秒に設定
+      data = response.parsed_response["articles"]
+      return data
+    end
+    @extraced_data = getAPI #上記APIの値渡し用
+    @from = "cnCryptnews@outlook.jp"
+    @url  = 'cn-cryptnews.com'
+    @users  = User.all
+    @emails = @users.select { |user| user[:deliver] }.map { |user| user[:email] }
+    @emails.map do |user|
+      puts user
+    mail(
+      to:user,
+      from:"#{@from}",
+      subject:"#{@today}本日の仮想通貨市場のニュースをお届けします"
+      )
+    end
+      puts "Parts: #{parts.inspect}"
+  end  
+  
+  #　ユーザーを削除した場合、メールを送る
+  def delete_user(user)
+    @from = "cnCryptnews@outlook.jp"
+    @url  = 'cn-cryptnews.com'
+    @email = user
+    mail(
+      to:@email,
+      from:@from,
+      subject:"ユーザー削除の処理が完了しました"
+    )
   end
 
-  def send_test(user)
-    @user  = user
-    @today = Date.today
-    @url   = 'cn-cryptnews.com'
-    # urlは、メール本文のテキストに渡す
-    mail(to:@user.email,subject:"#{@today}     本日の仮想通貨市場のニュースをお届けします")
-    #@user.emailはデータベースのカラムを入力すること
-    # userの引数は、データベースから送られてくるメールアドレスを入力したい
+  # ユーザーを登録した場合、メールをお送る 
+  def register_user(user)
+    @from = "cnCryptnews@outlook.jp"
+    @url  = 'cn-cryptnews.com'
+    @email = user
+    mail(
+      to:@email,
+      from:@from,
+      subject:"ユーザー登録ありがとうございます！"
+    )
   end
 
 end
+
+

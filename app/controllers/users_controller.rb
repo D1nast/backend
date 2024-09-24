@@ -4,40 +4,58 @@ class UsersController < ApplicationController
   require 'json'
   NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
   NEWS_API_KEY = ENV['NEWS_API_KEY']
-
-  def show 
-    user = User.find(1)
-    render json: { email: user.email }
-  end
+  before_action :authenticate_user,only:[:show]
+  
 # createが成功する条件①６文字以上のパスワードであること②＠マークが１つで、かつ＠マーク以降に.が入力されていること
   def create
     user = User.new(user_params)
     if params_check && checkAtSign && user.save
       render json: { email: user.email }, status: :created
+      UserMailer.register_user(user.email).deliver
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-# 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
-  def send
-    today = Date.today
-    oneago = Date.today - 1
-    url = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
-    response = self.class.get(url, timeout: 10) # タイムアウト時間を10秒に設定
-    data = response.parsed_response["articles"]
-    extracted_data = data.map do |article|
-      {'title' => article['title']}
+  # メール配信を解除する
+  # ユーザーが見つからなければその時点で処理取りやめ
+  def change
+    user = User.find_by(email:user_params[:email])
+    if user.deliver == true
+      user.deliver=false
+      user.save
+      render json:"メールの配信を解除しました"
+    else
+      user.deliver=true
+      user.save
+      render json:"メールの配信を登録しました"
     end
-    user = User.find(2)
-    UserMailer.send_mail(user, extracted_data).deliver
   end
 
-  def send_test
-    user = User.find(2)
-    UserMailer.send_test(user).deliver
+  def delete
+    user = User.find_by(email:user_params[:email])
+    # userでレコードを全て取得
+    UserMailer.delete_user(user.email).deliver
+    user.destroy
   end
 
+# 定期的な仮想通貨関連ニュースを登録されたメールアドレスユーザーに送信する
+# 課題：①本番環境に合わせていくことと　②取得したアドレス全件に送っていくこと
+# リンクつけると弾かれる
+# 定期的な配信になっていない
+  def mail
+    # テーブルから全ての登録ユーザーを洗い出して、deliverがtrueの顧客にメールアドレスを
+    userList = User.all
+    extraced_user = userList.map do |user|
+      if user.deliver
+        {'email' => user['email']}
+      end
+    end
+    UserMailer.send_mail(extraced_user).deliver
+    # RAILS_ENVでメールを送れない　画面がホワイトアウトする
+    # extraced_dataには以下のような内容が引数に送られている（配列のオブジェクト）
+    # [{"title":"内容","url":"リンク"},{"title":"内容","url":"リンク"}]
+  end
 
   private
 # ↓ストロングパラメータ
@@ -45,7 +63,14 @@ class UsersController < ApplicationController
     params.require(:user).permit(:email,:password,:password_confirmation)
   end
 
-# ↓パスワードが６文字以上かnilじゃないかチェック
+  # def require_login
+  #   if logged_in? == false
+  #     render json:{error:'Not authorized'},status:unauthorized
+  #   end
+  # end
+  
+
+  #  ↓パスワードが６文字以上かnilじゃないかチェック
   def params_check
     password = params.dig(:user, :password)
     len = password.length
@@ -71,4 +96,6 @@ class UsersController < ApplicationController
       end
     end
   end
+
+
 end
