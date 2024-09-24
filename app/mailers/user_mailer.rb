@@ -5,15 +5,18 @@ class UserMailer < ApplicationMailer
   NEWS_API_KEY = ENV['NEWS_API_KEY']
 
   # 毎日朝７時にメール仮想通貨のマーケット情報のメールを送信する
-  def daily_mail
+  def daily_mail(extraced_user)
+
     def getAPI #APIの取得
       today = Date.today
       oneago = Date.today - 2
       api = "#{NEWS_API_BASE_URL}?q=bitcoin&from=#{oneago}&to=#{today}&language=en&pageSize=5&sortBy=popularity&apiKey=#{NEWS_API_KEY}"
       response = self.class.get(api, timeout: 10) # タイムアウト時間を10秒に設定
       data = response.parsed_response["articles"]
+      puts data
       return data
     end
+
     @extraced_data = getAPI #上記APIの値渡し用
     @from = "cnCryptnews@outlook.jp"
     @url  = 'cn-cryptnews.com'
@@ -27,7 +30,6 @@ class UserMailer < ApplicationMailer
       subject:"#{@today}本日の仮想通貨市場のニュースをお届けします"
       )
     end
-      puts "Parts: #{parts.inspect}"
   end  
   
   #　ユーザーを削除した場合、メールを送る
