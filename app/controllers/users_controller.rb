@@ -51,11 +51,11 @@ class UsersController < ApplicationController
         {'email' => user['email']}
       end
     end
-    UserMailer.send_mail(extraced_user).deliver
-    # RAILS_ENVでメールを送れない　画面がホワイトアウトする
-    # extraced_dataには以下のような内容が引数に送られている（配列のオブジェクト）
-    # [{"title":"内容","url":"リンク"},{"title":"内容","url":"リンク"}]
+    puts extraced_user
+    UserMailer.daily_mail(extraced_user).deliver
   end
+
+  
 
   private
 # ↓ストロングパラメータ

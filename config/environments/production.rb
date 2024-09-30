@@ -125,6 +125,9 @@ Rails.application.configure do
     user_name:            "#{USER_NAME}",
     password:             "#{USER_PASS}",
     authentication:       'login',
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+    open_timeout:         30,  # 接続時のタイムアウトを設定
+    read_timeout:         30   # 応答待ちのタイムアウトを設定
   }
 end
+
