@@ -53,8 +53,6 @@ class UsersController < ApplicationController
     end
     puts extraced_user
     UserMailer.daily_mail(extraced_user).deliver
-    # RAILS_ENVでメールを送れない　画面がホワイトアウトする
-    # extraced_dataには以下のような内容が引数に送られている（配列のオブジェクト）
   end
 
   
