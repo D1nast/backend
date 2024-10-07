@@ -114,20 +114,25 @@ Rails.application.configure do
   #本番環境でもメール機能を実装 
 
   
-  USER_NAME = ENV['EMAIL_USER']
-  USER_PASS = ENV['EMAIL_PASS']
+  # USER_NAME = ENV['EMAIL_USER']
+  # USER_PASS = ENV['EMAIL_PASS']
+  USER_NAME = ENV['GMAIL_USER']
+  USER_PASS = ENV['GMAIL_PASS']
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     port:                 587,
-    address:              'smtp.office365.com',
-    domain:               'outlook.jp',
+    # address:              'smtp.office365.com',
+    # domain:               'outlook.jp',
+    address:              'smtp.gmail.com',
+    domain:               'gmail.com',
     user_name:            "#{USER_NAME}",
     password:             "#{USER_PASS}",
-    authentication:       'login',
+    # authentication:       'login',
+    authentication:       'plain',
     enable_starttls_auto: true,
-    open_timeout:         30,  # 接続時のタイムアウトを設定
-    read_timeout:         30   # 応答待ちのタイムアウトを設定
+    open_timeout:         30, 
+    read_timeout:         30 
   }
 end
 
