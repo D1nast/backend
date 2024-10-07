@@ -18,7 +18,7 @@ class UserMailer < ApplicationMailer
     end
 
     @extraced_data = getAPI #上記APIの値渡し用
-    @from = "cnCryptnews@outlook.jp"
+    @from = "cncryptnews@gmail.com"
     @url  = 'cn-cryptnews.com'
     @users  = User.all
     @emails = @users.select { |user| user[:deliver] }.map { |user| user[:email] }
@@ -34,7 +34,7 @@ class UserMailer < ApplicationMailer
   
   #　ユーザーを削除した場合、メールを送る
   def delete_user(user)
-    @from = "cnCryptnews@outlook.jp"
+    @from = "cncryptnews@gmail.com"
     @url  = 'cn-cryptnews.com'
     @email = user
     mail(
@@ -46,7 +46,7 @@ class UserMailer < ApplicationMailer
 
   # ユーザーを登録した場合、メールをお送る 
   def register_user(user)
-    @from = "cnCryptnews@outlook.jp"
+    @from = "cncryptnews@gmail.com"
     @url  = 'cn-cryptnews.com'
     @email = user
     mail(
